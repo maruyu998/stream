@@ -1,0 +1,55 @@
+{
+  "name": "livestream",
+  "version": "0.1.0",
+  "private": true,
+  "dependencies": {
+    "@testing-library/jest-dom": "^5.16.4",
+    "@testing-library/react": "^13.3.0",
+    "@testing-library/user-event": "^13.5.0",
+    "hls.js": "1.0.4",
+    "basic-auth": "^2.0.1",
+    "config": "^3.3.6",
+    "connect-mongo": "^4.6.0",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "express-session": "^1.17.1",
+    "moauth": "github:maruyu998/MOauth",
+    "mongodb": "^4.7.0",
+    "node-cron": "^3.0.0",
+    "path": "^0.12.7",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-scripts": "5.0.1",
+    "web-vitals": "^2.1.4"
+  },
+  "scripts": {
+    "reactdev": "PORT=3001 BROWSER=none react-scripts start",
+    "reactdeploy": "react-scripts build",
+    "serverdev": "nodemon server/index.js",
+    "serverdeploy": "NODE_ENV=production node server/index.js",
+    "dev": "run-p reactdev serverdev",
+    "deploy": "react-scripts build && NODE_ENV=production node server/index.js",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "forever": "NODE_ENV=production forever start --minUptime 60000 --spinSleepTime 20000 --uid stream -a server/index.js"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "type": "module"
+}

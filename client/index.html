@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="manifest" href="./manifest.json" crossorigin="use-credentials">
+  <!-- <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script> -->
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@1"></script>
+  <title>Live Stream</title>
+</head>
+<body style='background:black;text-align:center'>
+  <video id="video" controls autoplay></video>
+  <div id='slow' style='position:absolute;z-index:999999;'></div>
+  <div id='fast' style='position:absolute;z-index:999999;'></div>
+  <div id='show' style='position:absolute;z-index:999999;pointer-events: none;'></div>
+  <style>
+    @keyframes fadeOut {
+      0% { opacity: 1; }
+      100% { opacity: 0; }
+    }
+  </style>
+  <script>
+    var video = document.getElementById('video')
+    var slow = document.getElementById('slow')
+    var fast = document.getElementById('fast')
+    var show = document.getElementById('show')
+    function setSpeedWithDelta(delta){
+      video.playbackRate = (video.playbackRate + delta) >= 0.1 ? video.playbackRate + delta : video.playbackRate
+      video.playbackRate = Math.round(video.playbackRate / 0.1) / 10
+      show.innerHTML = `<p style='color:white;font-size:500%;`
+                                 +`text-shadow:0 0 15px #000000,0 0 15px #000000,0 0 15px #000000,0 0 15px #000000,`
+                                 +           `0 0 15px #000000,0 0 15px #000000,0 0 15px #000000,0 0 15px #000000;`
+                                 +`animation:fadeOut 2s;animation-fill-mode:both'>${video.playbackRate}</p>`
+    }
+    slow.addEventListener('click',(e)=>setSpeedWithDelta(-0.1))
+    fast.addEventListener('click',(e)=>setSpeedWithDelta(0.1))
+    function reshape(){
+      width = document.body.clientWidth-9
+      height = document.documentElement.clientHeight-23
+      video.setAttribute('width', `${width}px`)
+      video.setAttribute('height', `${height}px`)
+      video.style['z-index'] = '-100'
+      slow.style.top = `${height/5}px`
+      slow.style.width = `${width/5}px`
+      slow.style.height = `${height/5*3}px`
+      show.style.top = `${height/5}px`
+      show.style.left = `${width/5*2}px`
+      show.style.width = `${width/5}px`
+      show.style.height = `${height}px`
+      fast.style.top = `${height/5}px`
+      fast.style.left = `${width/5*4}px`
+      fast.style.width = `${width/5}px`
+      fast.style.height = `${height/5*3}px`
+    }
+    reshape()
+    window.onresize = reshape
+  </script>
+  <script>
+    var video = document.getElementById('video');
+    var videoSrc = 'index.m3u8';
+    if (Hls.isSupported()) {
+      var hls = new Hls();
+      hls.loadSource(videoSrc);
+      hls.attachMedia(video);
+    }
+    else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+      video.src = videoSrc;
+    }
+  </script>
+  <script>
+    if ('serviceWorker' in navigator) {
+      navigator.serviceWorker.register('sw.js')
+      .then(registration=>console.log('ServiceWorker registration successful with scope: ', registration.scope))
+      .catch(err=> console.log('ServiceWorker registration failed: ',err));
+    }
+  </script>
+</body>
+</html>
